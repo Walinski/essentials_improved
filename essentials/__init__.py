@@ -23,7 +23,7 @@ class Essentials(IPlugin):
         perms = [
             'essentials.jr', 'essentials.ai', 'essentials.ac', 'essentials.send_ai', 'essentials.ninja',
             'essentials.puffle', 'essentials.tp', 'essentials.ban', 'essentials.summon', 'essentials.kick',
-            'essentials.stamps', 'essentials.mail', 'essentials.medals', 'essentials.af', 'essentials_aig'
+            'essentials.stamps', 'essentials.mail', 'essentials.medals', 'essentials.af', 'essentials_aig', 'essentials.all'
         ]
         await asyncio.gather(*(self.server.permissions.register(perm) for perm in perms))
         self.items_by_name = {item.name: item for item in self.server.items.values()}
@@ -215,3 +215,27 @@ class Essentials(IPlugin):
             elif puffle.id == 10:
                 penguin.rainbow_adoptability = True
             await penguin.send_xt('ap_command', puffle.name.lower() if puffle.id < 12 else puffle.id)
+
+    @commands.command('all')
+    @permissions.has_or_moderator('essentials.all')
+    async def add_all(self, p):
+        for item in self.server.items.values():
+            await p.add_inventory(item, cost=0)
+
+        for stamp in self.server.stamps.values():
+            await p.add_stamp(stamp)
+
+        for igloo in self.server.igloos.values():
+            await p.add_igloo(igloo, cost=0)
+
+        for furniture in self.server.furniture.values():
+            await p.add_furniture(furniture, cost=0)
+
+        for location in self.server.locations.values():
+            await p.add_location(location, cost=0)
+
+        for flooring in self.server.flooring.values():
+            await p.add_flooring(flooring, cost=0)
+
+        for card in self.server.cards.values():
+            await p.add_card(card)
