@@ -23,7 +23,7 @@ class Essentials(IPlugin):
         perms = [
             'essentials.jr', 'essentials.ai', 'essentials.ac', 'essentials.send_ai', 'essentials.ninja',
             'essentials.puffle', 'essentials.tp', 'essentials.ban', 'essentials.summon', 'essentials.kick',
-            'essentials.stamps', 'essentials.mail', 'essentials.medals', 'essentials.af', 'essentials_aig', 'essentials.all'
+            'essentials.stamps', 'essentials.mail', 'essentials.medals', 'essentials.af', 'essentials_aig', 'essentials.all', 'essentials.nickname'
         ]
         await asyncio.gather(*(self.server.permissions.register(perm) for perm in perms))
         self.items_by_name = {item.name: item for item in self.server.items.values()}
@@ -239,3 +239,11 @@ class Essentials(IPlugin):
 
         for card in self.server.cards.values():
             await p.add_card(card)
+
+    @commands.command('nickname', alias=['nick'])
+    @permissions.has_or_moderator('essentials.nickname')
+    async def nickname(self, p, *, nickname: str):
+        await p.update(nickname=nickname).apply()
+        room = self.server.rooms.get(p.room.id)
+        if room:
+            await p.join_room(room)
